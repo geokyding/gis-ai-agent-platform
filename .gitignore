@@ -1,0 +1,94 @@
+# ===================== 1. IDE 相关（IntelliJ IDEA） =====================
+# IDEA 配置目录
+.idea/
+# 模块文件
+*.iml
+*.iws
+*.ipr
+# 项目编译缓存
+out/
+# 其他 IDE 临时文件
+*.swp
+*.swo
+
+# ===================== 2. Java/Maven 相关 =====================
+# Maven 编译输出目录
+target/
+# Maven 临时备份文件
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+# Java 编译产物
+*.class
+*.jar
+*.war
+*.ear
+# 日志文件
+*.log
+
+# ===================== 3. 操作系统相关 =====================
+# Windows 系统文件
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# Mac 系统文件
+.DS_Store
+# Linux 临时文件
+*~
+# 系统临时文件
+*.tmp
+*.temp
+
+# ===================== 4. Docker 相关（可选） =====================
+# Docker 构建缓存/日志
+docker/.env
+docker/*.log
+docker/.dockerignore
+# 容器数据卷临时文件
+docker/volumes/
+
+# ===================== 5. Python 相关（AI Agent 部分） =====================
+# Python 编译缓存
+__pycache__/
+*.py[cod]
+*$py.class
+# 虚拟环境
+venv/
+env/
+.venv/
+# 依赖包缓存
+*.egg-info/
+dist/
+build/
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# ===================== 6. GIS 相关临时文件 =====================
+# GDAL/OGR 临时数据文件
+*.aux.xml
+*.tif.aux.xml
+*.ovr
+# 空间数据库临时文件
+*.db-journal
+# 测试用 GIS 数据（大型文件建议用 .gitignore 排除）
+*.shp.xml
+*.prj
+*.shx
+*.dbf
+
+# ===================== 7. 其他通用忽略 =====================
+# 压缩包
+*.zip
+*.tar.gz
+*.rar
+*.7z
+# 敏感配置文件
+*.properties.local
+*.yml.local
+# 缓存目录
+.cache/

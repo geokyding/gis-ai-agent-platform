@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- 基础配置 -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.dingky.gis.ai</groupId> <!-- 你的项目组ID，按之前约定的规范 -->
+    <artifactId>gis-ai-agent-platform</artifactId> <!-- 项目根ID -->
+    <version>1.0-SNAPSHOT</version> <!-- 版本号，SNAPSHOT表示开发版 -->
+    <packaging>pom</packaging> <!-- 根模块必须为pom，用于聚合子模块 -->
+    <name>gis-ai-agent-platform</name> <!-- 项目名称 -->
+    <description>GIS与AI Agent融合的智能平台，支持地理空间分析、自主任务执行</description>
+
+    <!-- 统一配置：JDK版本、依赖版本，避免子模块重复定义 -->
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source> <!-- 与你IDEA的JDK版本一致 -->
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 可提前定义常用依赖版本，后续子模块直接引用 -->
+        <gdal.version>3.8.0</gdal.version>
+        <spring.boot.version>3.2.4</spring.boot.version>
+    </properties>
+
+    <!-- 聚合所有子模块：modules、services、agent、docker（docker模块可选） -->
+    <modules>
+        <module>modules</module>
+        <module>services</module>
+        <module>agent</module>
+    </modules>
+
+    <!-- 依赖管理：统一管控所有子模块的依赖版本，子模块无需写版本号 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 示例：Spring Boot依赖（如果services模块用Spring Boot） -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- 示例：GDAL依赖（GIS核心） -->
+            <dependency>
+                <groupId>org.gdal</groupId>
+                <artifactId>gdal</artifactId>
+                <version>${gdal.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 通用插件：编译、打包插件，所有子模块继承 -->
+    <build>
+        <plugins>
+            <!-- JDK编译插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
