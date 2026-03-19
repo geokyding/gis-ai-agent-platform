@@ -2,21 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <!-- 继承根模块的配置 -->
-        <groupId>com.dingky.gis.ai</groupId>
-        <artifactId>gis-ai-agent-platform</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    <packaging>pom</packaging>
-    <modules>
-        <module>vector-core</module>
-        <module>vector-core/vector-parsing</module>
-    </modules>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.dingky.gis.ai</groupId>
+        <artifactId>modules</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
-    <artifactId>modules</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>vector-parsing</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -25,18 +19,15 @@
     </properties>
 
     <dependencies>
-        <!-- gdal-->
+        <!-- SpringBoot -->
         <dependency>
-            <groupId>org.gdal</groupId>
-            <artifactId>gdal</artifactId>
-            <version>3.9.0</version>
-            <!--            <scope>provided</scope>-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.83</version>
-            <!--            <scope>compile</scope>-->
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

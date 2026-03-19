@@ -1,0 +1,7 @@
+# 仅开发环境生效的配置
+data:
+  shp:
+    path: D:/works/temp/data/test_shp.shp  # 本地 shp 文件路径
+# 可覆盖主配置的内容（比如开发环境想改端口）
+# server:
+#   port: 8081

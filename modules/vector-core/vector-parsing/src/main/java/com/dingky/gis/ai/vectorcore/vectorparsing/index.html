@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>解析 Shp 文件</title>
+    <!-- 引入 Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<button onclick="parseShp()">解析 Shp 文件</button>
+<div id="result"></div>
+
+<script>
+    // 定义解析方法
+    function parseShp() {
+        // 后端接口地址
+        const url = 'http://localhost:8080/vector/parse';
+        // 请求参数
+        const data = {
+            path: 'D:/works/temp/data/test_shp.shp' // 替换为你的文件路径
+        };
+
+        // 发送 POST 请求
+        axios.post(url, data)
+            .then(response => {
+                // 成功回调：展示结果
+                document.getElementById('result').innerText = JSON.stringify(response.data, null, 2);
+            })
+            .catch(error => {
+                // 失败回调：展示错误
+                document.getElementById('result').innerText = '请求失败：' + error.message;
+            });
+    }
+</script>
+</body>
+</html>
