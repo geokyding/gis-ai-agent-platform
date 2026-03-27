@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gdal.gdal.gdal;
 import org.gdal.ogr.ogr;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -20,16 +21,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class GdalConfig {
     private static Logger log = LogManager.getLogger(GdalConfig.class);
+
+    @Value("${gdal.library.path}")
+    private String gdalLibraryPath;
+
     @PostConstruct
     public void init() {
-        // 1.注册驱动
-        gdal.AllRegister();
-        ogr.RegisterAll();
-        // 2. 设置编码（非常关键，防止中文乱码）
-        gdal.SetConfigOption("GDAL_FILENAME_IS_UTF8", "YES");
-        gdal.SetConfigOption("SHAPE_ENCODING", "UTF-8");
+        try {
+            System.load(gdalLibraryPath);
+            // 1.注册驱动
+            gdal.AllRegister();
+            ogr.RegisterAll();
+            // 2. 设置编码（非常关键，防止中文乱码）
+            gdal.SetConfigOption("GDAL_FILENAME_IS_UTF8", "YES");
+            gdal.SetConfigOption("SHAPE_ENCODING", "UTF-8");
 
-//        System.loadLibrary("gdaljni");
-        log.info("gdal/ogr 初始化完成");
+            log.info("gdal/ogr 初始化完成");
+        } catch (UnsatisfiedLinkError e) {
+            log.error("GDAL原生库加载失败: {}", e.getMessage());
+            throw new RuntimeException("GDAL原生库加载失败，请检查gdal.library.path配置: " + gdalLibraryPath, e);
+        } catch (Exception e) {
+            log.error("gdal/ogr 初始化失败: {}", e.getMessage());
+            throw new RuntimeException("gdal/ogr 初始化失败", e);
+        }
     }
 }

@@ -5,3 +5,8 @@ data:
 # 可覆盖主配置的内容（比如开发环境想改端口）
 # server:
 #   port: 8081
+
+# GDAL库路径配置
+gdal:
+  library:
+    path: D:\OfficeSoftware\JetBrains\depends\release-1930-x64-gdal-3-9-0-mapserver-8-0-1\bin\gdal\java\gdalalljni.dll

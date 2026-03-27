@@ -1,8 +1,8 @@
 package com.dingky.gis.ai.vectorcore.vectorparsing.service;
 
-import com.alibaba.fastjson.JSONObject;
+// import com.alibaba.fastjson.JSONObject;
 import com.dingky.gis.ai.vectorcore.vectorparsing.dto.response.ShpParseResponse;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+// import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.gdal.ogr.DataSource;

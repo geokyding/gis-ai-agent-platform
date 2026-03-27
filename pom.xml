@@ -17,7 +17,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- 可提前定义常用依赖版本，后续子模块直接引用 -->
-        <gdal.version>3.8.0</gdal.version>
+        <gdal.version>3.9.0</gdal.version>
         <spring.boot.version>3.2.4</spring.boot.version>
     </properties>
 

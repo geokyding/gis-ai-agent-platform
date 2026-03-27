@@ -31,4 +31,103 @@
         </dependency>
     </dependencies>
 
+    <!-- 核心：添加SpringBoot打包插件 -->
+    <build>
+        <plugins>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                &lt;!&ndash; 建议指定版本（与SpringBoot版本一致），避免版本冲突 &ndash;&gt;-->
+<!--                &lt;!&ndash; 如果父POM已管理SpringBoot版本，可省略version &ndash;&gt;-->
+<!--                <version>3.2.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            &lt;!&ndash; 必须添加此goal，否则打包后的JAR无法独立运行 &ndash;&gt;-->
+<!--                            <goal>repackage</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+
+<!--                </executions>-->
+<!--                &lt;!&ndash; 可选：指定主类（如果项目有多个主类时必须配置） &ndash;&gt;-->
+<!--                <configuration>-->
+<!--                    <mainClass>com.dingky.gis.ai.vectorcore.vectorparsing.VectorParsingApp</mainClass>-->
+<!--                    &lt;!&ndash; 替换为你实际的主类全路径（包含main方法的类） &ndash;&gt;-->
+<!--                </configuration>-->
+
+<!--            </plugin>-->
+            <!-- 可选：编译插件（确保Java版本匹配） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
+
+            <!-- 2. Shade 核心打包插件（企业级胖包打包） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.1</version> <!-- 稳定版，企业常用 -->
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- 1. 指定可执行 JAR 的主类（关键：替换为你的实际主类） -->
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- 替换为你项目的启动类全路径 -->
+                                    <mainClass>com.dingky.gis.ai.vectorcore.vectorparsing.VectorParsingApp</mainClass>
+                                </transformer>
+                                <!-- 合并 Spring Boot 的配置文件（避免依赖冲突） -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.tooling</resource>
+                                </transformer>
+                                <!-- 合并服务描述文件（避免 SPI 失效） -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                            </transformers>
+
+                            <!-- 2. 可选：排除冗余依赖/文件（减小 JAR 体积） -->
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>LICENSE</exclude>
+                                        <exclude>README.md</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+
+                            <!-- 3. 可选：重命名包（解决依赖冲突，如不同版本的 commons-lang） -->
+                            <!-- <relocations>
+                                <relocation>
+                                    <pattern>org.apache.commons.lang</pattern>
+                                    <shadedPattern>com.dingky.shaded.commons.lang</shadedPattern>
+                                </relocation>
+                            </relocations> -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+        </plugins>
+    </build>
+
 </project>

@@ -1,5 +1,5 @@
 server:
-  port: 8081 # 后端服务端口，默认 8080，可自定义
+  port: 9090 # 后端服务端口，默认 8080，可自定义
 spring:
   application:
     name: gis-demo # 应用名称

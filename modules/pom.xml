@@ -29,7 +29,7 @@
         <dependency>
             <groupId>org.gdal</groupId>
             <artifactId>gdal</artifactId>
-            <version>3.9.0</version>
+            <!-- 版本由根pom的dependencyManagement统一管理 -->
             <!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
