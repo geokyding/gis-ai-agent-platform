@@ -26,6 +26,8 @@
         <module>modules</module>
         <module>services</module>
         <module>agent</module>
+        <module>modules/gis-platform</module>
+
     </modules>
 
     <!-- 依赖管理：统一管控所有子模块的依赖版本，子模块无需写版本号 -->
