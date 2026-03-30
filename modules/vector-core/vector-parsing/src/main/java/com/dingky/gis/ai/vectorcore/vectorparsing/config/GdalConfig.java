@@ -28,7 +28,15 @@ public class GdalConfig {
     @PostConstruct
     public void init() {
         try {
-            System.load(gdalLibraryPath);
+//            System.load(gdalLibraryPath);
+            // 永远跨平台加载
+            // 它的规则：
+            //Windows → 自动找 gdaljni.dll 或 gdalalljni.dll
+            //Linux → 自动找 libgdaljni.so，会自动添加lib 前缀和 .so 后缀
+            //不需要路径！不需要路径！不需要路径！
+            //Docker 里也不用改配置！
+            log.info("开始加载 gdal/ogr 库: {}", gdalLibraryPath);
+            System.loadLibrary(gdalLibraryPath);
             // 1.注册驱动
             gdal.AllRegister();
             ogr.RegisterAll();
