@@ -5,4 +5,4 @@ spring:
     name: gis-demo # 应用名称
   # 核心：指定默认激活的环境（开发环境）
   profiles:
-    active: dev  # 这里写环境名（dev/test/prod），启动时会加载对应配置
+    active: prod  # 这里写环境名（dev/test/prod），启动时会加载对应配置
