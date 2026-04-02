@@ -2,6 +2,7 @@ package com.dingky.gis.ai.platform.worker.config;
 
 import com.dingky.gis.ai.platform.common.model.KafkaPropertiesExt;
 import com.dingky.gis.ai.platform.common.model.TaskMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ import java.util.Map;
  */
 @Configuration
 @EnableKafka
+@Slf4j
 public class KafkaConfig {
 //    @Value("${spring.kafka.bootstrap-servers}")
 //    private String bootstrapServers;
@@ -55,6 +57,7 @@ public class KafkaConfig {
         if (kafkaPropertiesExt.getConsumer() != null && kafkaPropertiesExt.getConsumer().getGroupId() != null){
             groupId = kafkaPropertiesExt.getConsumer().getGroupId();
         }
+        log.info("worker KafkaConfig 创建 Kafka 监听器：" + groupId);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
 
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);

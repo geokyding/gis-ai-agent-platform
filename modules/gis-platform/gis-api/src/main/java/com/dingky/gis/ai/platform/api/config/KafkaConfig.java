@@ -2,6 +2,8 @@ package com.dingky.gis.ai.platform.api.config;
 
 import com.dingky.gis.ai.platform.common.model.KafkaPropertiesExt;
 import com.dingky.gis.ai.platform.common.model.TaskMessage;
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +37,7 @@ import java.util.Map;
  * Kafka
  */
 @Configuration
+@Slf4j
 public class KafkaConfig {
 
     private final KafkaPropertiesExt kafkaPropertiesExt;
@@ -52,6 +55,7 @@ public class KafkaConfig {
         if (kafkaPropertiesExt != null && kafkaPropertiesExt.getBootstrapServers() != null){
             config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertiesExt.getBootstrapServers());
         }else{
+            log.info("未配置Kafka地址，使用默认地址：hostlocal:9092");
             config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "hostlocal:9092");
         }
         // key序列化
@@ -67,6 +71,15 @@ public class KafkaConfig {
     @Bean
     public KafkaTemplate<String , TaskMessage> kafkaTemplate(){
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    /**
+     * 初始化
+     * Spring 在创建完当前对象、注入完所有依赖之后，会自动调用加了 @PostConstruct 的方法。
+     */
+    @PostConstruct
+    public void init(){
+        log.info("KafkaConfig 初始化完成");
     }
 
 }

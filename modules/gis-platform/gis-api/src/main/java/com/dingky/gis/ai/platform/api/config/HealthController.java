@@ -25,6 +25,7 @@ public class HealthController {
     public Map<String , Object> check(){
         Map<String, Object> result = new HashMap<>();
         result.put("status", "good");
+        result.put("message", "启动成功^_^");
         return result;
     }
 }
