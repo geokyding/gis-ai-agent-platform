@@ -1,7 +1,7 @@
 package com.dingky.gis.ai.platform.api.config;
 
 import com.dingky.gis.ai.platform.common.model.KafkaPropertiesExt;
-import com.dingky.gis.ai.platform.common.model.TaskMessage;
+import com.dingky.gis.ai.platform.common.model.FileTaskMessage;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -49,7 +49,7 @@ public class KafkaConfig {
      * Kafka生产者工厂
      */
     @Bean
-    public ProducerFactory<String , TaskMessage> producerFactory(){
+    public ProducerFactory<String , FileTaskMessage> producerFactory(){
         Map<String, Object> config = new HashMap<>();
         // Kafka地址（你的服务器）
         if (kafkaPropertiesExt != null && kafkaPropertiesExt.getBootstrapServers() != null){
@@ -69,7 +69,7 @@ public class KafkaConfig {
      * Kafka发送模板
      */
     @Bean
-    public KafkaTemplate<String , TaskMessage> kafkaTemplate(){
+    public KafkaTemplate<String , FileTaskMessage> kafkaTemplate(){
         return new KafkaTemplate<>(producerFactory());
     }
 

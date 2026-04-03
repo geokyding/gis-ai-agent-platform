@@ -2,4 +2,8 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: gis-group
+      group-id: gis-parse-group
+
+gdal:
+  library:
+    path: libgdalalljni

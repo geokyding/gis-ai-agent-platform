@@ -1,7 +1,7 @@
 package com.dingky.gis.ai.platform.api.controller;
 
 import com.dingky.gis.ai.platform.api.service.KafkaProducerService;
-import com.dingky.gis.ai.platform.common.model.TaskMessage;
+import com.dingky.gis.ai.platform.common.model.FileTaskMessage;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,7 +52,7 @@ public class UploadController {
         file.transferTo(new java.io.File(fileName));
         log.info("上传文件：{}", fileName);
         // 构造任务
-        TaskMessage message = new TaskMessage();
+        FileTaskMessage message = new FileTaskMessage();
         message.setTaskId(UUID.randomUUID().toString());
         message.setFilePath(fileName);
         message.setTimestamp(System.currentTimeMillis());

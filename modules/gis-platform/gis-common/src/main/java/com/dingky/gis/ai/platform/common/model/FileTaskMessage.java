@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data  // getter/setter/toString方法 (lombok 提供)
 @NoArgsConstructor  // 无参构造 (lombok 提供)
 @AllArgsConstructor  // 全参构造 (lombok 提供)
-public class TaskMessage implements Serializable {
+public class FileTaskMessage implements Serializable {
     // 任务 id（唯一）作用：防止任务重复执行
     private String taskId;
     // 数据文件路径

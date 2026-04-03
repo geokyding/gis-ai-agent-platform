@@ -1,7 +1,8 @@
 package com.dingky.gis.ai.platform.api.service;
 
-import com.dingky.gis.ai.platform.common.model.TaskMessage;
+import com.dingky.gis.ai.platform.common.model.FileTaskMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class KafkaProducerService {
+    @Value("${spring.kafka.topic}")
+    private String TOPIC;
 
-    private final KafkaTemplate<String, TaskMessage> kafkaTemplate;
-    public KafkaProducerService(KafkaTemplate<String, TaskMessage> kafkaTemplate) {
+    private final KafkaTemplate<String, FileTaskMessage> kafkaTemplate;
+    public KafkaProducerService(KafkaTemplate<String, FileTaskMessage> kafkaTemplate) {
         log.info("KafkaProducerService 初始化");
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -29,8 +32,8 @@ public class KafkaProducerService {
     /**
      * 发送任务到Kafka
      */
-    public void send(TaskMessage message){
-        System.out.println("发送任务到Kafka: " + message.getTaskId());
-        kafkaTemplate.send("shp-topic", message);
+    public void send(FileTaskMessage message){
+        log.info("{}发送{}任务到Kafka: {}", message.getFilePath(), TOPIC, message.getTaskId());
+        kafkaTemplate.send(TOPIC, message.getTaskId(), message);
     }
 }
