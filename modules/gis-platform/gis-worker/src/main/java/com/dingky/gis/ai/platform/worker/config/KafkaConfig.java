@@ -92,6 +92,41 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, FileTaskMessage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        // 并发数
+        factory.setConcurrency(3);
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String , LayerTaskMessage>  layerConsumerFactory(){
+        Map<String, Object> config = new HashMap<>();
+        // Kafka地址（你的服务器）
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertiesExt.getBootstrapServers());
+        String groupId = "shp-parsing-group";
+//        if (kafkaPropertiesExt.getConsumer() != null && kafkaPropertiesExt.getConsumer().getGroupId() != null){
+//            groupId = kafkaPropertiesExt.getConsumer().getGroupId();
+//        }
+        log.info("worker KafkaConfig 创建 Kafka 监听器：" + groupId);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+
+        // 允许反序列化你的类
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+
+        return new DefaultKafkaConsumerFactory<>(
+                config,
+                new StringDeserializer(),
+                new JsonDeserializer<>(LayerTaskMessage.class)
+        );
+    }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, LayerTaskMessage> layerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, LayerTaskMessage> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(layerConsumerFactory());
+        // 并发数
         factory.setConcurrency(3);
         return factory;
     }
@@ -106,7 +141,7 @@ public class KafkaConfig {
      * Kafka生产者工厂
      */
     @Bean
-    public ProducerFactory<String , LayerTaskMessage> producerFactory(){
+    public ProducerFactory<String , Object> producerFactory(){
         Map<String, Object> config = new HashMap<>();
         // Kafka地址（你的服务器）
         if (kafkaPropertiesExt != null && kafkaPropertiesExt.getBootstrapServers() != null){
@@ -127,7 +162,7 @@ public class KafkaConfig {
      * 创建 Kafka 发送器（Producer）
      */
     @Bean
-    public KafkaTemplate<String, LayerTaskMessage> kafkaTemplate() {
+    public KafkaTemplate<String, Object> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 

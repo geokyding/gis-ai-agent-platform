@@ -1,26 +1,25 @@
-package com.dingky.gis.ai.platform.worker.config;
+package com.dingky.gis.ai.platform.featureworker.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.gdal.gdal.gdal;
 import org.gdal.ogr.ogr;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * ProjectName: gis-ai-agent-platform
  * ClassName: GdalConfig
- * Package: com.dingky.gis.ai.platform.worker.config
+ * Package: com.dingky.gis.ai.platform.featureworker.config
  * Description:
  *
  * @Author: ding
- * @Create 2026/4/3 16:33
+ * @Create 2026/4/8 11:31
  * @Version 1.0
  **/
-@Configuration
+@Component
 @Slf4j
 public class GdalConfig {
-
     @Value("${gdal.library.path}")
     private String gdalLibraryPath;
 

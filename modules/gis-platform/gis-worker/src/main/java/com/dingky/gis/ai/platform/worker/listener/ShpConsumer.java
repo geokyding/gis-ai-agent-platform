@@ -21,7 +21,7 @@ public class ShpConsumer {
     /**
      * 监听 Kafka 主题
      */
-    @KafkaListener(topics = "layer-parse-topic")
+//    @KafkaListener(topics = "layer-parse-topic")
     public void custom(FileTaskMessage msg){
         log.info("====== 收到任务 ======");
         log.info("taskId: {}", msg.getTaskId());

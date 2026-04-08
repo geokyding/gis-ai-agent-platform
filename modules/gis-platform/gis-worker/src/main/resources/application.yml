@@ -4,6 +4,27 @@ spring:
     consumer:
       group-id: gis-parse-group
 
+
+#spring:
+#  kafka:
+#    bootstrap-servers: localhost:9092
+#    consumer:
+#      group-id: layer-parse-group
+#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+#
+#      properties:
+#        spring.json.trusted.packages: "*"
+#        spring.json.use.type.headers: true
+#        spring.json.value.default.type: java.lang.Object
+#
+#    producer:
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#      properties:
+#        spring.json.trusted.packages: "*"
+#        spring.json.use.type.headers: true  # 关键: 添加类型头解决多个consumer共用一个kafkaconfig配置文件, 序列化类型不一致的问题
+#        spring.json.value.default.type: java.lang.Object   # 兜底（关键）
+
 gdal:
   library:
-    path: libgdalalljni
+    path: gdalalljni

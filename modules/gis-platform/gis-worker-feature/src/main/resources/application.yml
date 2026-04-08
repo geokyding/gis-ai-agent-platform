@@ -1,0 +1,9 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: gis-feature-group
+
+gdal:
+  library:
+    path: gdalalljni

@@ -13,6 +13,7 @@
         <module>vector-core</module>
         <module>vector-core/vector-parsing</module>
         <module>gis-platform</module>
+        <module>gis-platform/gis-worker-feature</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
 

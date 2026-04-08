@@ -2,6 +2,7 @@ package com.dingky.gis.ai.platform.worker.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gdal.ogr.DataSource;
+import org.gdal.ogr.Layer;
 import org.gdal.ogr.ogr;
 import org.springframework.stereotype.Service;
 
@@ -35,5 +36,17 @@ public class GdalService {
         }
         if (dataSource != null) dataSource.delete();
         return layerNames;
+    }
+
+    public long getFeatureCount(String filePath, String layerName) {
+        DataSource dataSource = ogr.Open(filePath, 0);
+        if (dataSource != null){
+            Layer layer = dataSource.GetLayer(layerName);
+            if (layer != null){
+                return layer.GetFeatureCount();
+            }
+        }
+        if (dataSource != null) dataSource.delete();
+        return 0;
     }
 }
