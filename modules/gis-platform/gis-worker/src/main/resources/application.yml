@@ -4,6 +4,11 @@ spring:
     consumer:
       group-id: gis-parse-group
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gis_db
+    username: postgres
+    password: pw123
+    driver-class-name: org.postgresql.Driver
 
 #spring:
 #  kafka:

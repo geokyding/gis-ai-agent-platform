@@ -16,6 +16,7 @@
         <module>gis-common</module>
         <module>gis-worker</module>
         <module>gis-api</module>
+        <module>gis-worker-import</module>
     </modules>
 
     <properties>

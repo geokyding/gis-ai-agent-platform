@@ -35,6 +35,12 @@ public class GdalConfig {
             // 2. 设置编码（非常关键，防止中文乱码）
             gdal.SetConfigOption("GDAL_FILENAME_IS_UTF8", "YES");
             gdal.SetConfigOption("SHAPE_ENCODING", "UTF-8");
+
+            // 多线程必加
+            gdal.SetConfigOption("GDAL_PAM_SHARED", "NO");
+            gdal.SetConfigOption("SHAPE_LOCKING", "NO");
+            gdal.SetConfigOption("SHAPE_RESTORE_SHX", "YES");
+            gdal.SetConfigOption("OGR_THREAD_SUPPORT", "YES");
         } catch (UnsatisfiedLinkError e) {
             throw new RuntimeException("GDAL原生库加载失败，请检查gdal.library.path配置: " + gdalLibraryPath, e);
         }catch (Exception e){

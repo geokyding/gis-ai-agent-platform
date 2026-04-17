@@ -1,5 +1,6 @@
 package com.dingky.gis.ai.platform.worker.service;
 
+import com.dingky.gis.ai.platform.common.model.FieldDef;
 import lombok.extern.slf4j.Slf4j;
 import org.gdal.ogr.DataSource;
 import org.gdal.ogr.Layer;
@@ -48,5 +49,43 @@ public class GdalService {
         }
         if (dataSource != null) dataSource.delete();
         return 0;
+    }
+
+    public List<FieldDef> getFields(String filePath, String layerName) {
+        DataSource dataSource = ogr.Open(filePath, 0);
+        if (dataSource == null){
+            log.error("无法打开文件：{}", filePath);
+        }
+        Layer layer = dataSource.GetLayer(layerName);
+        List<FieldDef> fields = new ArrayList<>();
+        for (int i = 0; i < layer.GetLayerDefn().GetFieldCount(); i++){
+            fields.add(new FieldDef(layer.GetLayerDefn().GetFieldDefn(i).GetNameRef(), mapType(layer.GetLayerDefn().GetFieldDefn(i).GetType())));
+        }
+        if (layer != null) layer.delete();
+        if (dataSource != null) dataSource.delete();
+        return fields;
+    }
+    private String mapType(int gdalType) {
+        switch (gdalType) {
+
+            case ogr.OFTInteger:
+            case ogr.OFTInteger64:
+                return "BIGINT";
+
+            case ogr.OFTReal:
+                return "DOUBLE PRECISION";
+
+            case ogr.OFTString:
+                return "TEXT";
+
+            case ogr.OFTDate:
+                return "DATE";
+
+            case ogr.OFTDateTime:
+                return "TIMESTAMP";
+
+            default:
+                return "TEXT";
+        }
     }
 }

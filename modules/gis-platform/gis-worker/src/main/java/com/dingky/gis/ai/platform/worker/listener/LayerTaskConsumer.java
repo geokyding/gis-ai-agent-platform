@@ -1,12 +1,16 @@
 package com.dingky.gis.ai.platform.worker.listener;
 
 import com.dingky.gis.ai.platform.common.model.FeatureTaskMessage;
+import com.dingky.gis.ai.platform.common.model.FieldDef;
 import com.dingky.gis.ai.platform.common.model.LayerTaskMessage;
 import com.dingky.gis.ai.platform.worker.service.GdalService;
+import com.dingky.gis.ai.platform.worker.service.TableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * ProjectName: gis-ai-agent-platform
@@ -23,9 +27,11 @@ import org.springframework.stereotype.Component;
 public class LayerTaskConsumer {
     private final KafkaTemplate<String , Object> kafkaTemplate;
     private final GdalService gdalService;
-    public LayerTaskConsumer(KafkaTemplate<String , Object> kafkaTemplate, GdalService gdalService) {
+    private final TableService tableService;
+    public LayerTaskConsumer(KafkaTemplate<String , Object> kafkaTemplate, GdalService gdalService, TableService tableService) {
         this.kafkaTemplate = kafkaTemplate;
         this.gdalService = gdalService;
+        this.tableService = tableService;
     }
 
     @KafkaListener(topics = "layer-parse-topic", containerFactory = "layerFactory")
@@ -34,8 +40,18 @@ public class LayerTaskConsumer {
         log.info("收到任务：{}", msg);
         String filePath = msg.getFilePath();
         String layerName = msg.getLayerName();
+
+        // 1获取字段结构
+        List<FieldDef> fields = gdalService.getFields(
+                msg.getFilePath(),
+                msg.getLayerName()
+        );
+
+        // 创建表（只执行一次）
+        tableService.createTableIfNotExists(msg.getTaskId(), fields);
+
         long featureCount = gdalService.getFeatureCount(filePath, layerName);
-        int limit = 1000;
+        int limit = 300;
         int batchSize = 0;
         for (int i = 0; i < featureCount; i += limit){
             FeatureTaskMessage featureTaskMessage = new FeatureTaskMessage();

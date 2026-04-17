@@ -1,4 +1,5 @@
-package com.dingky.gis.ai.platform.featureworker.config;
+package com.dingky.gis.ai.platform.importworker.config;
+
 
 import com.dingky.gis.ai.platform.common.model.KafkaPropertiesExt;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +21,11 @@ import java.util.Map;
 /**
  * ProjectName: gis-ai-agent-platform
  * ClassName: KafkaConfig
- * Package: com.dingky.gis.ai.platform.featureworker.config
+ * Package: com.dingky.gis.ai.platform.importworker.config
  * Description:
  *
  * @Author: ding
- * @Create 2026/4/7 16:06
+ * @Create 2026/4/10 14:39
  * @Version 1.0
  **/
 @Configuration
@@ -37,29 +38,26 @@ public class KafkaConfig {
     }
     /**
      * ======================
-     * Consumer（消费 feature-task）
+     * Consumer（消费 import-feature-topic）
      * ======================
      */
     @Bean
     public ConsumerFactory<String , Object> consumerFactory(){
         Map<String, Object> config = new HashMap<>();
         // Kafka地址（服务器）
+        String bootstrapServers = "hostlocal:9092";
         if (kafkaPropertiesExt != null && kafkaPropertiesExt.getBootstrapServers() != null){
-            config.put("bootstrap.servers", kafkaPropertiesExt.getBootstrapServers());
-        }else {
-            log.info("未配置Kafka地址，使用默认地址：hostlocal:9092");
-            config.put("bootstrap.servers", "hostlocal:9092");
+            bootstrapServers = kafkaPropertiesExt.getBootstrapServers();
         }
-        String groupId = "gis-feature-group";
+        config.put("bootstrap.servers", bootstrapServers);
+        String groupId = "gis-import-group";
         if (kafkaPropertiesExt.getConsumer() != null && kafkaPropertiesExt.getConsumer().getGroupId() != null){
             groupId = kafkaPropertiesExt.getConsumer().getGroupId();
         }
         log.info("worker KafkaConfig 创建 Kafka 监听器：" + groupId);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-
         // 允许反序列化你的类
         config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return new DefaultKafkaConsumerFactory<>(config);
@@ -84,13 +82,14 @@ public class KafkaConfig {
     public ProducerFactory<String, Object> producerFactory(){
         Map<String, Object> config = new HashMap<>();
         // Kafka地址（服务器）
+        String bootstrapServers = "hostlocal:9092";
         if (kafkaPropertiesExt != null && kafkaPropertiesExt.getBootstrapServers() != null){
-            config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaPropertiesExt.getBootstrapServers());
-        }else {
-            log.info("未配置Kafka地址，使用默认地址：hostlocal:9092");
-            config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "hostlocal:9092");
+            bootstrapServers = kafkaPropertiesExt.getBootstrapServers();
         }
+        config.put("bootstrap.servers", bootstrapServers);
+        // key序列化
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        // value序列化（对象 → JSON）
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         return new DefaultKafkaProducerFactory<>(config);
     }
@@ -98,5 +97,6 @@ public class KafkaConfig {
     public KafkaTemplate<String, Object> kafkaTemplate(){
         return new KafkaTemplate<>(producerFactory());
     }
+
 
 }

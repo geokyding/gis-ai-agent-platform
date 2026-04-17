@@ -2,6 +2,7 @@ package com.dingky.gis.ai.platform.worker.listener;
 
 import com.dingky.gis.ai.platform.common.model.LayerTaskMessage;
 import com.dingky.gis.ai.platform.common.model.FileTaskMessage;
+import com.dingky.gis.ai.platform.common.util.PgUtil;
 import com.dingky.gis.ai.platform.worker.service.GdalService;
 import lombok.extern.slf4j.Slf4j;
 import org.gdal.ogr.DataSource;
@@ -55,7 +56,9 @@ public class FileTaskConsumer {
         // 2.创建任务：图层解析
         for (String layerName : layerNames){
             LayerTaskMessage layerTaskMessage = new LayerTaskMessage();
-            layerTaskMessage.setTaskId(msg.getTaskId());
+            // 创建任务id并作为后续表名
+            String taskId = PgUtil.generateTableName(filePath, layerName);
+            layerTaskMessage.setTaskId(taskId);
             layerTaskMessage.setFilePath(filePath);
             layerTaskMessage.setLayerName(layerName);
             layerTaskMessage.setTimestamp(String.valueOf(msg.getTimestamp()));
