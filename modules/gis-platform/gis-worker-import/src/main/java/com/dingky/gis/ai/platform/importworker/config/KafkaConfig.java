@@ -60,6 +60,19 @@ public class KafkaConfig {
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         // 允许反序列化你的类
         config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+        // 关键配置：防止消费者主动离开组
+        /*
+        SESSION_TIMEOUT_MS_CONFIG: 会话超时时间（30秒）
+        HEARTBEAT_INTERVAL_MS_CONFIG: 心跳间隔（10秒）
+        MAX_POLL_INTERVAL_MS_CONFIG: 最大轮询间隔（10分钟）
+        MAX_POLL_RECORDS_CONFIG: 每次轮询最大记录数（100条）
+        这些配置确保消费者有足够时间处理大批量数据
+         */
+        config.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, 30000);
+        config.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, 10000);
+        config.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 600000);
+        config.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 100);
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
@@ -86,11 +99,13 @@ public class KafkaConfig {
         if (kafkaPropertiesExt != null && kafkaPropertiesExt.getBootstrapServers() != null){
             bootstrapServers = kafkaPropertiesExt.getBootstrapServers();
         }
-        config.put("bootstrap.servers", bootstrapServers);
+        // "bootstrap.servers"
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         // key序列化
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         // value序列化（对象 → JSON）
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
         return new DefaultKafkaProducerFactory<>(config);
     }
     @Bean

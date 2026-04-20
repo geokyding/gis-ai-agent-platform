@@ -31,10 +31,8 @@ import java.util.stream.Collectors;
  * 过滤无效字段名
  * 跳过无效的要素数据
  * 分批处理：
- * 设置批次大小为1000条，避免内存溢出
+ * 设置批次大小为100条，避免内存溢出
  * 每批处理后清空列表
- * 事务管理：
- * 添加 @Transactional 注解，确保数据一致性
  * 异常时自动回滚
  * 完善的异常处理：
  * try-catch捕获所有异常
@@ -68,11 +66,10 @@ public class ImportConsumer {
     }
 
     @KafkaListener(topics = "data-import-topic", containerFactory = "kafkaListenerContainerFactory")
-    @Transactional(rollbackFor = Exception.class)
     public void consume(ImportTaskMessage msg){
         try {
             log.info("====== 监听到data-import-topic任务 ======");
-
+            long startTime = System.currentTimeMillis();
             if (msg == null) {
                 log.error("接收到的消息为空");
                 return;
@@ -133,6 +130,7 @@ public class ImportConsumer {
 //            String placeholders = validFieldNames.stream()
 //                    .map(field -> "?")
 //                    .collect(Collectors.joining(", "));
+
             final Map<String, String> finalFieldTypes = fieldTypes;
             String placeholders = validFieldNames.stream()
                     .map(field -> {
@@ -150,7 +148,9 @@ public class ImportConsumer {
                     .collect(Collectors.joining(", "));
 
             String insertSql = "INSERT INTO \"" + tableName + "\" (geom, " + fields + ") VALUES (ST_GeomFromWKB(?), " + placeholders + ")";
-            log.info("准备插入数据，总数: {}, SQL: {}", msg.getFeatures().size(), insertSql);
+            if(log.isDebugEnabled()){
+                log.debug("准备插入数据，总数: {}, SQL: {}", msg.getFeatures().size(), insertSql);
+            }
 
             List<Object[]> batchArgs = new ArrayList<>();
             int successCount = 0;
@@ -189,6 +189,9 @@ public class ImportConsumer {
             }
 
             log.info("====== 数据导入完成，成功: {}, 跳过: {} ======", successCount, skipCount);
+            // 最后统一输出统计
+            log.info("数据导入完成，成功: {}, 跳过: {}, 耗时: {}ms",
+                    successCount, skipCount, System.currentTimeMillis() - startTime);
 
         } catch (IllegalArgumentException e) {
             log.error("数据验证失败: {}", e.getMessage());

@@ -138,8 +138,21 @@ public class GdalService {
             int[] month = new int[1];
             int[] day = new int[1];
             feature.GetFieldAsDateTime(fieldIndex, year, month, day, new int[1], new int[1], new float[1], new int[1]);
+
 //            return LocalDate.of(year[0], month[0], day[0]);
-            return String.format("%04d-%02d-%02d", year[0], month[0], day[0]);
+//            return String.format("%04d-%02d-%02d", year[0], month[0], day[0]);
+            if (year[0] == 0 || month[0] == 0 || day[0] == 0) {
+                log.debug("检测到无效日期字段(值为0),返回null");
+                return null;
+            }
+
+            try {
+                LocalDate date = LocalDate.of(year[0], month[0], day[0]);
+                return date.toString();
+            } catch (Exception e) {
+                log.warn("日期值无效: {}-{}-{}, 返回null", year[0], month[0], day[0]);
+                return null;
+            }
         } catch (Exception e) {
             log.warn("解析日期字段失败，使用字符串值: {}", e.getMessage());
             return null;
@@ -155,8 +168,19 @@ public class GdalService {
             int[] minute = new int[1];
             float[] second = new float[1];
             feature.GetFieldAsDateTime(fieldIndex, new int[1], new int[1], new int[1], hour, minute, second, new int[1]);
-//            return LocalTime.of(hour[0], minute[0], (int) second[0]);
-            return String.format("%02d:%02d:%02d", hour[0], minute[0], (int) second[0]);
+//            return String.format("%02d:%02d:%02d", hour[0], minute[0], (int) second[0]);
+            if (hour[0] == 0 && minute[0] == 0 && second[0] == 0) {
+                log.debug("检测到无效时间字段(值为0),返回null");
+                return null;
+            }
+
+            try {
+                LocalTime time = LocalTime.of(hour[0], minute[0], (int) second[0]);
+                return time.toString();
+            } catch (Exception e) {
+                log.warn("时间值无效: {}:{}:{}, 返回null", hour[0], minute[0], (int) second[0]);
+                return null;
+            }
         } catch (Exception e) {
             log.warn("解析时间字段失败，使用字符串值: {}", e.getMessage());
             return null;
@@ -176,8 +200,20 @@ public class GdalService {
             float[] second = new float[1];
             int[] tzFlag = new int[1];
             feature.GetFieldAsDateTime(fieldIndex, year, month, day, hour, minute, second, tzFlag);
-//            return LocalDateTime.of(year[0], month[0], day[0], hour[0], minute[0], (int) second[0]);
-            return String.format("%04d-%02d-%02d %02d:%02d:%02d", year[0], month[0], day[0], hour[0], minute[0], (int) second[0]);
+//            return String.format("%04d-%02d-%02d %02d:%02d:%02d", year[0], month[0], day[0], hour[0], minute[0], (int) second[0]);
+            if (year[0] == 0 || month[0] == 0 || day[0] == 0) {
+                log.debug("检测到无效日期时间字段(日期为0),返回null");
+                return null;
+            }
+
+            try {
+                LocalDateTime dateTime = LocalDateTime.of(year[0], month[0], day[0], hour[0], minute[0], (int) second[0]);
+                return dateTime.toString().replace('T', ' ');
+            } catch (Exception e) {
+                log.warn("日期时间值无效: {}-{}-{} {}:{}:{}, 返回null",
+                        year[0], month[0], day[0], hour[0], minute[0], (int) second[0]);
+                return null;
+            }
         } catch (Exception e) {
             log.warn("解析日期时间字段失败，使用字符串值: {}", e.getMessage());
             return null;
