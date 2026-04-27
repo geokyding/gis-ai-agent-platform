@@ -27,4 +27,8 @@ public class ImportTaskMessage implements Serializable {
     private List< String> fieldNames;
     private List<FeatureDTO> features;
     private Map<String, String> fieldTypes;
+
+    public String getUniqueKey() {
+        return "fid";
+    }
 }

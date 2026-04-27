@@ -58,6 +58,7 @@ public class GdalService {
         }
         Layer layer = dataSource.GetLayer(layerName);
         List<FieldDef> fields = new ArrayList<>();
+        fields.add(new FieldDef("fid", "BIGINT"));
         for (int i = 0; i < layer.GetLayerDefn().GetFieldCount(); i++){
             fields.add(new FieldDef(layer.GetLayerDefn().GetFieldDefn(i).GetNameRef(), mapType(layer.GetLayerDefn().GetFieldDefn(i).GetType())));
         }

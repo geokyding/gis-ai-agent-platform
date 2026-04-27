@@ -66,6 +66,7 @@ public class ImportConsumer {
     }
 
     @KafkaListener(topics = "data-import-topic", containerFactory = "kafkaListenerContainerFactory")
+    @Transactional
     public void consume(ImportTaskMessage msg){
         try {
             log.info("====== 监听到data-import-topic任务 ======");
@@ -147,7 +148,12 @@ public class ImportConsumer {
                     })
                     .collect(Collectors.joining(", "));
 
-            String insertSql = "INSERT INTO \"" + tableName + "\" (geom, " + fields + ") VALUES (ST_GeomFromWKB(?), " + placeholders + ")";
+            String uniqueKey = msg.getUniqueKey();
+            String conflictClause = "";
+            if (uniqueKey != null && !uniqueKey.trim().isEmpty()) {
+                conflictClause = " ON CONFLICT (\"" + uniqueKey.trim() + "\") DO NOTHING";
+            }
+            String insertSql = "INSERT INTO \"" + tableName + "\" (\""+uniqueKey+"\", geom, " + fields + ") VALUES (ST_GeomFromWKB(?), " + placeholders + ")" + conflictClause;
             if(log.isDebugEnabled()){
                 log.debug("准备插入数据，总数: {}, SQL: {}", msg.getFeatures().size(), insertSql);
             }
@@ -164,6 +170,7 @@ public class ImportConsumer {
                 }
 
                 List<Object> row = new ArrayList<>();
+                row.add(feature.getFid());
                 row.add(feature.getGeometry());
 
                 for (String fieldName : validFieldNames) {

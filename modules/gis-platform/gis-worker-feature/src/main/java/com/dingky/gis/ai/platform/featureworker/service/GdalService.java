@@ -87,6 +87,10 @@ public class GdalService {
         Map<String, Object> row = new HashMap<>();
         // 获取字段值
         for (int i = 0; i < feature.GetFieldCount(); i++) {
+            log.debug("字段索引: {}, 字段名: {}, 字段值: {}", i, feature.GetFieldDefnRef(i).GetNameRef(), feature.GetFieldAsString(i));
+            // 获取fid
+            long fid = feature.GetFID();
+            row.put("fid", fid);
             String fieldName = feature.GetFieldDefnRef(i).GetNameRef();
             String fieldValue = feature.GetFieldAsString(i);
             int fieldType = feature.GetFieldDefnRef(i).GetType();
