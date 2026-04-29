@@ -1,0 +1,4 @@
+geoserver:
+  url: http://localhost:8181/geoserver
+  username: admin
+  password: geoserver
