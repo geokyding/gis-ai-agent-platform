@@ -17,6 +17,7 @@
         <module>gis-worker</module>
         <module>gis-api</module>
         <module>gis-worker-import</module>
+        <module>gis-worker-feature</module>
     </modules>
 
     <properties>

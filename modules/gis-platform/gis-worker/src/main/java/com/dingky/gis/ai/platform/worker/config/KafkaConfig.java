@@ -127,7 +127,7 @@ public class KafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(layerConsumerFactory());
         // 并发数
-        factory.setConcurrency(3);
+        factory.setConcurrency(6);
         return factory;
     }
 

@@ -21,12 +21,30 @@
         <repository>
             <id>geosolutions</id>
             <name>GeoSolutions Repository</name>
-            <!-- 注意：如果 http 报错，尝试改为 https -->
             <url>https://maven.geo-solutions.it/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>osgeo</id>
+            <name>OSGeo Release Repository</name>
+            <url>https://repo.osgeo.org/repository/release/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
     <dependencies>
+        <!-- GeoServer Manager - 用于与GeoServer REST API交互 -->
+        <!-- 如果依赖无法下载，请运行项目根目录下的 install-geoserver-manager.ps1 脚本手动安装 -->
         <dependency>
             <groupId>it.geosolutions</groupId>
             <artifactId>geoserver-manager</artifactId>

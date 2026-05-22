@@ -3,6 +3,8 @@ package com.dingky.gis.ai.platform.featureworker.service;
 import com.dingky.gis.ai.platform.common.model.FeatureDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.gdal.ogr.*;
+import org.gdal.osr.CoordinateTransformation;
+import org.gdal.osr.SpatialReference;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,30 +36,34 @@ public class GdalService {
             throw new RuntimeException("无法打开文件：" + filePath);
         }
         Layer layer = dataSource.GetLayer(layerName);
+        
+        // 获取图层的空间参考（仅用于日志记录，不做转换）
+        SpatialReference sourceSR = layer.GetSpatialRef();
+        if (sourceSR != null) {
+            log.info("Shapefile 空间参考: {}", sourceSR.ExportToPrettyWkt());
+            log.info("✅ 保持原始坐标系，不做转换");
+        } else {
+            log.warn("Shapefile 没有定义空间参考 (.prj 文件缺失)");
+        }
+        
         layer.SetNextByIndex(offSet);
         int count = 0;
         Feature feature;
         while ((feature = layer.GetNextFeature()) != null && count < limit){
             long fid = feature.GetFID();
             Geometry geometry = feature.GetGeometryRef();
+            
+            // 直接导出 WKB，不做坐标转换
             byte[] wkb = geometry.ExportToWkb();
             Map<String, Object> properties = featurePropsExport(feature);
-//            List<String> fieldNames = getFieldNames(feature);
             FeatureDTO featureDTO = new FeatureDTO(fid, wkb, properties);
             result.add(featureDTO);
             feature.delete();
             count++;
         }
 
-//        for (int i = 0; i < limit; i++) {
-//            Feature feature = layer.GetNextFeature();
-//            if (feature == null) break;
-//            long fid = feature.GetFID();
-//            FeatureDTO featureDTO = new FeatureDTO(fid, feature.GetGeometryRef().ExportToWkb(), featureExportToJson(feature));
-//            result.add(featureDTO);
-//            feature.delete();
-//        }
-
+        // 清理资源
+        if (sourceSR != null) sourceSR.delete();
         layer.delete();
         dataSource.delete();
         return result;

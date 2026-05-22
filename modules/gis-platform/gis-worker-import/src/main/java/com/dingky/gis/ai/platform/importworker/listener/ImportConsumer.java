@@ -149,11 +149,18 @@ public class ImportConsumer {
                     .collect(Collectors.joining(", "));
 
             String uniqueKey = msg.getUniqueKey();
+            
+            // 注意：唯一约束应该在建表时就已经定义（见 TableService.createTableIfNotExists）
+            // 这里直接使用 ON CONFLICT 实现幂等性写入
             String conflictClause = "";
             if (uniqueKey != null && !uniqueKey.trim().isEmpty()) {
                 conflictClause = " ON CONFLICT (\"" + uniqueKey.trim() + "\") DO NOTHING";
             }
-            String insertSql = "INSERT INTO \"" + tableName + "\" (\""+uniqueKey+"\", geom, " + fields + ") VALUES (ST_GeomFromWKB(?), " + placeholders + ")" + conflictClause;
+            // 构建 INSERT SQL 语句
+            // 列顺序：uniqueKey, geom, field1, field2, ...
+            // 占位符顺序：fid(用于uniqueKey), geometry(WKB), field1Value, field2Value, ...
+            // 注意：直接使用 ST_GeomFromWKB，不指定 SRID，保持原始坐标系
+            String insertSql = "INSERT INTO \"" + tableName + "\" (\"" + uniqueKey + "\", geom, " + fields + ") VALUES (?, ST_GeomFromWKB(?), " + placeholders + ")" + conflictClause;
             if(log.isDebugEnabled()){
                 log.debug("准备插入数据，总数: {}, SQL: {}", msg.getFeatures().size(), insertSql);
             }

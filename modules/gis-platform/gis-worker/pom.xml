@@ -43,12 +43,6 @@
             <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
 
-        <!-- 解决 JsonDeserializer 报错：jackson 依赖 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-json</artifactId>
-        </dependency>
-
         <!-- 替换原来的spring-boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
